@@ -60,6 +60,7 @@ class Os implements Module
         // null out values in case they aren't filled.
         $os->getDevice()->fill([
             'hardware' => null,
+            'firmware' => null,
             'version' => null,
             'features' => null,
             'serial' => null,
@@ -95,6 +96,7 @@ class Os implements Module
             }
 
             // handle legacy variables, sometimes they are false
+            $deviceModel->firmware = ($firmware ?? $deviceModel->firmware) ?: null;
             $deviceModel->version = ($version ?? $deviceModel->version) ?: null;
             $deviceModel->hardware = ($hardware ?? $deviceModel->hardware) ?: null;
             $deviceModel->features = ($features ?? $deviceModel->features) ?: null;
@@ -131,7 +133,7 @@ class Os implements Module
         return [
             'devices' => Device::where('device_id', $device->device_id)
             ->leftJoin('locations', 'location_id', 'id')
-            ->select(['sysName', 'sysObjectID', 'sysDescr', 'sysContact', 'version', 'hardware', 'features', 'location', 'os', 'type', 'serial', 'icon'])
+            ->select(['sysName', 'sysObjectID', 'sysDescr', 'sysContact', 'version', 'firmware', 'hardware', 'features', 'location', 'os', 'type', 'serial', 'icon'])
             ->get(),
         ];
     }
@@ -143,7 +145,7 @@ class Os implements Module
         $device->icon = basename(Url::findOsImage($device->os, $device->features, null, 'images/os/'));
 
         Log::info(trans('device.attributes.location') . ': ' . $device->location?->display());
-        foreach (['hardware', 'version', 'features', 'serial'] as $attribute) {
+        foreach (['hardware', 'version', 'firmware', 'features', 'serial'] as $attribute) {
             if (isset($device->$attribute)) {
                 $device->$attribute = trim($device->$attribute);
             }
