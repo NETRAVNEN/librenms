@@ -158,7 +158,7 @@ if ($format == 'graph') {
         $where .= ' AND os = ?';
         $sql_param[] = $vars['os'];
     }
-    if (! empty($vars['versifirmwareon'])) {
+    if (! empty($vars['firmware'])) {
         $where .= ' AND firmware = ?';
         $sql_param[] = $vars['firmware'];
     }
